@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Speech-to-Text</h1>
+    <input type="file" id="audioFile" accept="audio/*">
+    <button onclick="convertSpeechToText()">Convert</button>
+    <p id="speechResult"></p>
+{% endblock %}

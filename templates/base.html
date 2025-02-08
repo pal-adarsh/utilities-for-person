@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dazzling Light - Assistive Technology</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Light gray background */
+            color: #333;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #2c3e50; /* Dark blue background */
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #ecf0f1; /* Light gray text */
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: background-color 0.3s, color 0.3s; /* Smooth hover effect */
+        }
+
+        .navbar a:hover {
+            background-color: #34495e; /* Slightly lighter blue on hover */
+            color: #ffffff; /* White text on hover */
+        }
+
+        .navbar a.logout {
+            float: right;
+            background-color: #e74c3c; /* Red logout button */
+        }
+
+        .navbar a.logout:hover {
+            background-color: #c0392b; /* Darker red on hover */
+        }
+
+        /* Content Styles */
+        .content {
+            padding: 80px 20px 20px; /* Add padding to avoid content overlap with navbar */
+        }
+
+        h1 {
+            color: #2c3e50; /* Dark blue heading */
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db; /* Blue button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Smooth hover effect */
+        }
+
+        button:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+        }
+
+        input, textarea {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            border: 1px solid #bdc3c7; /* Light gray border */
+            border-radius: 5px;
+            transition: border-color 0.3s; /* Smooth hover effect */
+        }
+
+        input:focus, textarea:focus {
+            border-color: #3498db; /* Blue border on focus */
+            outline: none;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #ffffff; /* White background for list items */
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li button {
+            margin-left: 10px;
+            background-color: #e74c3c; /* Red button */
+        }
+
+        li button:hover {
+            background-color: #c0392b; /* Darker red on hover */
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: #2c3e50; /* Dark blue footer */
+            color: #ecf0f1; /* Light gray text */
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/speech-to-text">Speech-to-Text</a>
+        <a href="/text-to-speech">Text-to-Speech</a>
+        <a href="/audio-notes">Audio Notes</a>
+        <a href="/sign-language">Sign Language</a>
+        <a href="/todo">To-Do List</a>
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        &copy; 2023 Dazzling Light - Assistive Technology
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

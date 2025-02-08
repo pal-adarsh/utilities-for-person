@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section id="text-to-speech">
+    <h2>Text-to-Speech</h2>
+    <textarea id="textInput" placeholder="Enter text to convert to speech"></textarea>
+    <button onclick="convertTextToSpeech()">Convert</button>
+    <audio controls id="audioPlayer"></audio>
+</section>
+{% endblock %}

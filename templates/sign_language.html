@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section id="sign-language">
+    <h2>Sign Language Interpreter</h2>
+    <video id="webcam" autoplay></video>
+    <button onclick="startSignLanguageInterpreter()">Start Interpreter</button>
+    <button onclick="stopSignLanguageInterpreter()">Stop Interpreter</button>
+    <p id="signResult">Sign language interpretation result will appear here.</p>
+</section>
+{% endblock %}
