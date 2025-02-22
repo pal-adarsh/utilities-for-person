@@ -8,7 +8,11 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
 # Dummy user database
-users = {"user1": "password1"}
+users = {"binita": "binita@123"}
+users = {"adarsh": "adarsh@123"}
+users = {"ashish": "ashish@123"}
+users = {"ankita": "ankita@123"}
+users = {"fiza": "fiza@123"}
 
 # Flask-Login setup
 login_manager = LoginManager()
