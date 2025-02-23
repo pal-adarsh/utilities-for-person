@@ -57,7 +57,7 @@ Ensure you have the following installed:
 
 1️⃣ **Clone the repository**  
 ```bash
-git clone https://github.com/pal-adarsh/for-disabled-persons.git
+git clone https://github.com/pal-adarsh/utilities-for-person.git
 ```
 
 2️⃣ **Install required Python libraries**  
