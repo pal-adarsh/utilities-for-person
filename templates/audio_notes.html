@@ -1,6 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    #audio-notes {
+    text-align: center;
+    margin: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+}
+body{
+        background: url('/static/wallpaper3.jpeg');
+    }
+
+ul li {
+    background: #f0f0f0;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+</style>
 <section id="audio-notes">
     <h2>Audio Note-Taking</h2>
     <button onclick="startRecording()">Start Recording</button>

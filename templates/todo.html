@@ -1,8 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: white;
+            margin: 5px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #3498db;
+            height: 50px;
+            width: 120px;
+            font-size: 20px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        body{
+        background: url('/static/wallpaper3.jpeg');
+    }
+    </style>
     <h1>To-Do List</h1>
     <input type="text" id="taskInput" placeholder="Add a new task">
+    <br>
     <button onclick="addTask()">Add Task</button>
     <ul id="taskList"></ul>
 

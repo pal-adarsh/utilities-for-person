@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title %}Dazzling Light Chatbot{% endblock %}
+
+{% block content %}
+<style>
+
+    /* General Styles */
+    body {
+        background: url('/static/wallpaper3.jpeg');
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background: #f4f4f4;
+    }
+    body{
+        background: url('/static/wallpaper3.jpeg');
+    }
+
+    /* Chatbot Container */
+    /* Add background image to the whole chatbot */
+    .chat-container {
+        height: 550px;
+        width: 450px;
+        background: url('/static/wallpaper.jpg') no-repeat center center;
+        background-size: cover;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* To ensure chat messages remain readable */
+    .chat-box {
+        background: rgba(255, 255, 255, 0.7);
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        scrollbar-width: thin;
+        scrollbar-color: #007bff transparent;
+    }
+
+    /* Add a subtle background to the input area */
+    .chat-input {
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Chat Header */
+    .chat-header {
+        background: #007bff;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    /* Scrollbar Styling */
+    .chat-box::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .chat-box::-webkit-scrollbar-thumb {
+        background-color: #007bff;
+        border-radius: 3px;
+    }
+
+    /* User & Bot Messages */
+    .user-msg, .bot-msg {
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        max-width: 75%;
+        word-wrap: break-word;
+    }
+
+    .user-msg {
+        background: #007bff;
+        color: white;
+        align-self: flex-end;
+        text-align: right;
+    }
+
+    .bot-msg {
+        background: #e5e5e5;
+        color: black;
+        align-self: flex-start;
+        text-align: left;
+    }
+
+    /* File Upload Section */
+    .file-upload input {
+        display: none;
+    }
+
+    .file-upload label {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .file-upload label:hover {
+        background: #0056b3;
+    }
+
+    /* Chat Input Section */
+    .chat-input input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+        font-size: 16px;
+    }
+
+    .chat-input button {
+        margin-left: 10px;
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+
+    .chat-input button:hover {
+        background: #0056b3;
+    }
+
+    /* File Link Styling */
+    .file-link {
+        display: block;
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .file-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 480px) {
+        .chat-container {
+            width: 90%;
+            height: 500px;
+        }
+    }
+</style>
+
+<div class="chat-container">
+    <div class="chat-header">Dazzling Light Chatbot</div>
+    <div class="chat-box" id="chatBox"></div>
+
+    <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Ask me anything...">
+        <button onclick="sendMessage()">Send</button> 
+        <div class="file-upload">
+            <input type="file" id="fileInput" onchange="uploadFile()">
+            <label for="fileInput">📁</label>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        let input = document.getElementById("userInput").value.trim();
+        if (input === "") return;
+
+        let chatBox = document.getElementById("chatBox");
+        let userMsg = `<div class='user-msg'>${input}</div>`;
+        chatBox.innerHTML += userMsg;
+
+        setTimeout(() => {
+            let botReply = getBotResponse(input);
+            let botMsg = `<div class='bot-msg'>${botReply}</div>`;
+            chatBox.innerHTML += botMsg;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 500);
+
+        document.getElementById("userInput").value = "";
+    }
+
+    function getBotResponse(input) {
+    input = input.toLowerCase();
+
+    // New conversational flow
+    if (input.includes("hii") || input.includes("hi") || input.includes("hello")) 
+        return "Hello! How's your day going?";
+
+    if (input.includes("good") || input.includes("i’m good") || input.includes("fine")) 
+        return "That’s great to hear! What’s on your mind?";
+
+    if (input.includes("just felt like chatting")) 
+        return "I like that! So, tell me, what’s something fun you did today?";
+
+    if (input.includes("had some amazing food")) 
+        return "Ooh, now I’m curious! What did you eat?";
+
+    if (input.includes("tried a new pizza place")) 
+        return "Nice choice! Classic or something unique?";
+
+    if (input.includes("spicy chicken pizza")) 
+        return "That sounds delicious! I bet it had the perfect kick of spice.";
+
+    if (input.includes("exactly")) 
+        return "If only I could eat! But I’ll take your word for it.";
+
+    // Existing chatbot responses
+    if (input.includes("speech-to-text")) return "Speech-to-Text converts spoken words into text.";
+    if (input.includes("text-to-speech")) return "Text-to-Speech converts written text into audio output.";
+    if (input.includes("audio note")) return "Audio Note-Taking allows you to record and save voice notes.";
+    if (input.includes("sign language")) return "Sign Language Interpreter recognizes basic hand gestures using a webcam.";
+    if (input.includes("to-do list")) return "The To-Do List helps you add, edit, and delete tasks with reminders.";
+    if (input.includes("emergency alert")) return "Emergency Alert sends alerts to predefined contacts during emergencies.";
+
+    return "Sorry, I didn't understand that. Try asking about Speech-to-Text, Text-to-Speech, or any other feature.";
+}
+
+
+    function uploadFile() {
+        let fileInput = document.getElementById("fileInput");
+        let file = fileInput.files[0];
+
+        if (!file) {
+            alert("Please select a file first!");
+            return;
+        }
+
+        let chatBox = document.getElementById("chatBox");
+
+        let fileLink = document.createElement("a");
+        fileLink.href = URL.createObjectURL(file);
+        fileLink.innerText = "📂 " + file.name;
+        fileLink.className = "file-link";
+        fileLink.onclick = function () {
+            window.location.href = fileLink.href;
+            return false;
+        };
+
+        chatBox.appendChild(fileLink);
+        fileInput.value = "";
+    }
+</script>
+{% endblock %}

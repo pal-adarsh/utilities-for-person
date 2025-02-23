@@ -8,11 +8,8 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
 # Dummy user database
-users = {"binita": "binita@123"}
-users = {"adarsh": "adarsh@123"}
-users = {"ashish": "ashish@123"}
-users = {"ankita": "ankita@123"}
-users = {"fiza": "fiza@123"}
+users = {"user1": "password1"}
+users = {"binita": "binita1"}
 
 # Flask-Login setup
 login_manager = LoginManager()
@@ -105,6 +102,13 @@ def login_page():
 @login_required
 def user_type():
     return render_template("user_type.html")
+
+# Chatbot Route
+@app.route("/chat")
+@login_required
+def chat_page():
+    return render_template("chat.html")
+
 
 # Speech-to-Text API
 @app.route('/speech-to-text', methods=['POST'])

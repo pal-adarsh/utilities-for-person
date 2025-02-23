@@ -1,10 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    #text-to-speech {
+    text-align: center;
+    margin: 20px;
+}
+
+textarea {
+    width: 80%;
+    height: 100px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+audio {
+    margin-top: 15px;
+}
+body{
+        background: url('/static/wallpaper3.jpeg');
+    }
+
+</style>
 <section id="text-to-speech">
     <h2>Text-to-Speech</h2>
     <textarea id="textInput" placeholder="Enter text to convert to speech"></textarea>
+    <br>
     <button onclick="convertTextToSpeech()">Convert</button>
+    <br>
     <audio controls id="audioPlayer"></audio>
 </section>
 {% endblock %}

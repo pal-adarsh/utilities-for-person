@@ -1,8 +1,72 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    
+    /* Centering horizontally and keeping it at the top */
+    #speech-to-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        height: auto; /* Adjust height based on content */
+        background-color: #f5f5f5;
+        padding-top: 0px; /* Ensures it's at the top */
+    }
+    body{
+        background: url('/static/wallpaper3.jpeg');
+    }
+
+    /* Styling the heading */
+    #speech-to-text h1 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    /* Styling file input */
+    #speech-to-text input[type="file"] {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    /* Styling the button */
+    #speech-to-text button {
+        padding: 12px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.3s ease-in-out;
+    }
+
+    /* Hover effect */
+    #speech-to-text button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Styling the result text */
+    #speechResult {
+        margin-top: 20px;
+        font-size: 1.2rem;
+        color: #333;
+        font-weight: bold;
+    }
+</style>
+
+<!-- Wrapped everything inside a div to apply the styles -->
+<div id="speech-to-text">
     <h1>Speech-to-Text</h1>
     <input type="file" id="audioFile" accept="audio/*">
     <button onclick="convertSpeechToText()">Convert</button>
     <p id="speechResult"></p>
+</div>
+
 {% endblock %}
