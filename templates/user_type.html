@@ -55,7 +55,7 @@ input, select {
     border-radius: 8px;
     font-size: 14px;
     background: rgba(255, 255, 255, 0.2);
-    color: white;
+    color: black;
     outline: none;
 }
 
@@ -100,10 +100,10 @@ button:hover {
         <h1>Fill Your Details</h1>
         <form id="userForm">
             <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name" required placeholder="Enter your name">
 
             <label for="surname">Surname:</label>
-            <input type="text" id="surname" name="surname" required>
+            <input type="text" id="surname" name="surname" required placeholder="Enter your surname">
 
             <label for="gender">Gender:</label>
             <select id="gender" name="gender" required>
@@ -113,16 +113,24 @@ button:hover {
                 <option value="other">Other</option>
             </select>
 
+            <label for="user-type">User-Type:</label>
+            <select id="user-type" name="user-type" required>
+                <option value="">Select your User-Type</option>
+                <option value="male">Disable person</option>
+                <option value="female">Abled person</option>
+            </select>
+
             <label for="age">Age:</label>
-            <input type="number" id="age" name="age" required>
+            <input type="number" id="age" name="age" required placeholder="Enter your age">
 
             <label for="age">Phone:</label>
-            <input type="number" id="age" name="age" required>
+            <input type="number" id="age" name="age" required placeholder="Enter your phone number">
 
             <label for="qualification">Qualification:</label>
-            <input type="text" id="qualification" name="qualification" required>
+            <input type="text" id="qualification" name="qualification" required placeholder="Enter your qualification: e.g., B.Tech, M.Tech, etc.">
 
-            <label for="freeslot">Free Time Slot:</label>
+            <label for
+            ="freeslot">Free Time Slot:</label>
             <input type="text" id="freeslot" name="freeslot" placeholder="e.g., 2 PM - 4 PM" required>
 
             <button onclick="selectUserType('disabled')">Submit</button>
