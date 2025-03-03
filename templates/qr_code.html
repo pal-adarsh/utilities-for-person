@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator & Reader</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    font-size: 2em;
+}
+
+.section {
+    margin-top: 20px;
+}
+
+input[type="text"], input[type="file"] {
+    width: 80%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    color: white;
+    background: #0056b3;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+}
+
+.btn:hover {
+    background: #007bff;
+    transform: scale(1.05);
+}
+
+.qr-image {
+    margin-top: 20px;
+    margin-left: 33%;
+    width: 200px;
+    height: 200px;
+    border-radius: 5px;
+}
+
+.result {
+    font-size: 1.2em;
+    margin-top: 10px;
+}
+
+#open-link {
+    background: #28a745;
+}
+
+#open-link:hover {
+    background: #218838;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>QR Code Generator & Reader</h1>
+
+        <div class="section">
+            <h2>Generate QR Code</h2>
+            <form id="qr-form">
+                <input type="text" name="text" placeholder="Enter text or URL" required>
+                <button type="submit" class="btn">Generate</button>
+            </form>
+            <img id="qr-image" class="qr-image" style="display:none;">
+            <a id="download-link" class="btn" style="display:none;" download="qrcode.png">Download QR Code</a>
+        </div>
+
+        <div class="section">
+            <h2>Upload an Image to Read QR Code</h2>
+            <form id="qr-reader-form" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*" required>
+                <button type="submit" class="btn">Read QR</button>
+            </form>
+            <p id="qr-result" class="result"></p>
+            <a id="open-link" class="btn" style="display:none;" target="_blank">Open Link</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("qr-form").onsubmit = async function(event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+            let response = await fetch('/generate', { method: 'POST', body: formData });
+            let blob = await response.blob();
+            let url = URL.createObjectURL(blob);
+            let qrImage = document.getElementById("qr-image");
+            let downloadLink = document.getElementById("download-link");
+
+            qrImage.src = url;
+            qrImage.style.display = "block";
+
+            downloadLink.href = url;
+            downloadLink.style.display = "inline-block";
+        };
+
+        document.getElementById("qr-reader-form").onsubmit = async function(event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+            let response = await fetch('/read', { method: 'POST', body: formData });
+            let result = await response.json();
+            let decodedText = result.decoded_text ? result.decoded_text.trim() : "No QR code detected.";
+            document.getElementById("qr-result").innerText = "Decoded Text: " + decodedText;
+
+            let openLink = document.getElementById("open-link");
+            if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+                openLink.href = decodedText;
+                openLink.style.display = "inline-block";
+            } else {
+                openLink.style.display = "none";
+            }
+        };
+    </script>
+</body>
+</html>

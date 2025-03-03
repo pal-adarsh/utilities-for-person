@@ -2,101 +2,207 @@
 
 {% block content %}
 <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-        }
-        input, button {
-            padding: 10px;
-            margin: 5px;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            background: white;
-            margin: 5px;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #3498db;
-            height: 50px;
-            width: 120px;
-            font-size: 20px;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        body{
-        background: url('/static/wallpaper3.jpeg');
-    }
-    </style>
+    body {
+    font-family: Arial, sans-serif;
+    background: url('/static/wallpaper3.jpeg');
+    text-align: center;
+    color: white;
+}
+
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
+}
+
+h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #00c8ff;
+    text-transform: uppercase;
+}
+
+input {
+    width: 80%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+button {
+    padding: 10px 16px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #00c8ff;
+    color: white;
+    transition: 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: #0080b3;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+li:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Task Text */
+.task-text {
+    flex-grow: 1;
+    text-align: left;
+    padding-left: 10px;
+    font-size: 16px;
+}
+
+/* Completed Task Style */
+.completed {
+    text-decoration: line-through;
+    color: gray;
+}
+
+/* Checkbox Style */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #00c8ff;
+    cursor: pointer;
+}
+
+/* Buttons (Edit & Delete) */
+.task-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.task-buttons button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.task-buttons button:hover {
+    transform: scale(1.1);
+}
+
+/* Edit Button */
+.edit-btn {
+    background: #ffcc00;
+    color: black;
+}
+
+/* Delete Button */
+.delete-btn {
+    background: #ff4444;
+    color: white;
+}
+
+
+</style>
+
+<div class="container">
     <h1>To-Do List</h1>
     <input type="text" id="taskInput" placeholder="Add a new task">
-    <br>
     <button onclick="addTask()">Add Task</button>
     <ul id="taskList"></ul>
+</div>
 
-    <script>
-        let tasks = [];
+<script>
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-        function addTask() {
-            const taskInput = document.getElementById("taskInput");
-            const taskList = document.getElementById("taskList");
-
-            if (taskInput.value.trim() === "") {
-                alert("Please enter a task!");
-                return;
-            }
-
-            const task = {
-                id: Date.now(),
-                text: taskInput.value,
-                completed: false
-            };
-            tasks.push(task);
-            renderTasks();
-            taskInput.value = "";
+    function addTask() {
+        const taskInput = document.getElementById("taskInput");
+        if (taskInput.value.trim() === "") {
+            alert("Please enter a task!");
+            return;
         }
 
-        function renderTasks() {
-            const taskList = document.getElementById("taskList");
-            taskList.innerHTML = "";
+        const task = {
+            id: Date.now(),
+            text: taskInput.value,
+            completed: false
+        };
 
-            tasks.forEach(task => {
-                const li = document.createElement("li");
-                li.innerHTML = `
-                    <span>${task.text}</span>
-                    <div>
-                        <button onclick="editTask(${task.id})">Edit</button>
-                        <button onclick="deleteTask(${task.id})">Delete</button>
-                    </div>
-                `;
-                taskList.appendChild(li);
-            });
-        }
-
-        function editTask(id) {
-            const task = tasks.find(task => task.id === id);
-            const newText = prompt("Edit your task:", task.text);
-            if (newText !== null) {
-                task.text = newText;
-                renderTasks();
-            }
-        }
-
-        function deleteTask(id) {
-            tasks = tasks.filter(task => task.id !== id);
-            renderTasks();
-        }
-
-        // Render tasks on page load
+        tasks.push(task);
+        saveTasks();
         renderTasks();
-    </script>
+        taskInput.value = "";
+    }
+
+    function toggleComplete(id) {
+        const task = tasks.find(task => task.id === id);
+        task.completed = !task.completed;
+        saveTasks();
+        renderTasks();
+    }
+
+    function editTask(id) {
+        const task = tasks.find(task => task.id === id);
+        const newText = prompt("Edit your task:", task.text);
+        if (newText !== null) {
+            task.text = newText;
+            saveTasks();
+            renderTasks();
+        }
+    }
+
+    function deleteTask(id) {
+        tasks = tasks.filter(task => task.id !== id);
+        saveTasks();
+        renderTasks();
+    }
+
+    function saveTasks() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+        const taskList = document.getElementById("taskList");
+        taskList.innerHTML = "";
+
+        tasks.forEach(task => {
+            const li = document.createElement("li");
+            li.classList.toggle("completed", task.completed);
+            li.innerHTML = `
+                <input type="checkbox" onclick="toggleComplete(${task.id})" ${task.completed ? "checked" : ""}>
+                <span>${task.text}</span>
+                <div class="buttons">
+                    <button onclick="editTask(${task.id})">✏️</button>
+                    <button onclick="deleteTask(${task.id})">❌</button>
+                </div>
+            `;
+            taskList.appendChild(li);
+        });
+    }
+
+    renderTasks();
+</script>
 {% endblock %}

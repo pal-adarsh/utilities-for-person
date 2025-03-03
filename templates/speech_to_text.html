@@ -2,8 +2,7 @@
 
 {% block content %}
 <style>
-    
-    /* Centering horizontally and keeping it at the top */
+    /* Centering the main container */
     #speech-to-text {
         display: flex;
         flex-direction: column;
@@ -11,62 +10,181 @@
         justify-content: center;
         text-align: center;
         width: 100%;
-        height: auto; /* Adjust height based on content */
-        background-color: #f5f5f5;
-        padding-top: 0px; /* Ensures it's at the top */
-    }
-    body{
-        background: url('/static/wallpaper3.jpeg');
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.8s ease-in-out;
     }
 
-    /* Styling the heading */
-    #speech-to-text h1 {
+    /* Background */
+    body {
+        background: url('/static/wallpaper3.jpeg') no-repeat center center/cover;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Heading */
+    h1 {
         font-size: 2rem;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        color: black;
+        text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.3);
+        animation: slideIn 0.8s ease-in-out;
     }
 
-    /* Styling file input */
-    #speech-to-text input[type="file"] {
+    /* File input */
+    #audioFile {
         padding: 10px;
         margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+        border: 2px solid #00f7ff;
+        border-radius: 8px;
+        background: #fff;
+        cursor: pointer;
+        transition: 0.3s ease-in-out;
+        width: 80%;
         text-align: center;
     }
 
-    /* Styling the button */
-    #speech-to-text button {
+    #audioFile:hover {
+        border-color: #007bff;
+        transform: scale(1.05);
+    }
+
+    /* Button */
+    button {
         padding: 12px 20px;
         margin: 10px;
         border: none;
-        border-radius: 5px;
-        background-color: #007bff;
+        border-radius: 8px;
+        background: linear-gradient(45deg, #007bff, #00f7ff);
         color: white;
         font-size: 1rem;
         cursor: pointer;
-        transition: 0.3s ease-in-out;
+        transition: 0.4s ease-in-out;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.5);
+        position: relative;
+        overflow: hidden;
     }
 
-    /* Hover effect */
-    #speech-to-text button:hover {
-        background-color: #0056b3;
+    /* Hover effect with glow */
+    button:hover {
+        background: linear-gradient(45deg, #0056b3, #00c8ff);
+        box-shadow: 0 6px 15px rgba(0, 123, 255, 0.8);
+        transform: scale(1.1);
     }
 
-    /* Styling the result text */
+    /* Button click animation */
+    button:active {
+        transform: scale(0.98);
+    }
+
+    /* Loader animation */
+    .loader {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid #00f7ff;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        animation: spin 1s linear infinite, pulse 1.5s ease-in-out infinite;
+        display: none;
+        margin-top: 15px;
+    }
+
+    /* Speech result */
     #speechResult {
         margin-top: 20px;
         font-size: 1.2rem;
-        color: #333;
+        color: black;
         font-weight: bold;
+        text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Keyframe Animations */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.2); opacity: 0.7; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(-10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+        0% { opacity: 0; transform: translateX(-30px); }
+        100% { opacity: 1; transform: translateX(0); }
     }
 </style>
 
-<!-- Wrapped everything inside a div to apply the styles -->
+<!-- Main container -->
 <div id="speech-to-text">
     <h1>Speech-to-Text</h1>
     <input type="file" id="audioFile" accept="audio/*">
     <button onclick="convertSpeechToText()">Convert</button>
+    <div class="loader" id="loadingSpinner"></div>
     <p id="speechResult"></p>
 </div>
 
+<script>
+    function convertSpeechToText() {
+        const fileInput = document.getElementById("audioFile");
+        const resultElement = document.getElementById("speechResult");
+        const loader = document.getElementById("loadingSpinner");
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert("Please select an audio file!");
+            return;
+        }
+
+        const file = fileInput.files[0];
+
+        // Check if the file is an audio file
+        if (!file.type.startsWith("audio/")) {
+            alert("Please upload a valid audio file!");
+            return;
+        }
+
+        // Show "Converting..." message and loader animation
+        resultElement.innerText = "Converting... Please wait.";
+        loader.style.display = "block";
+
+        // Create FormData to send file
+        const formData = new FormData();
+        formData.append("audio", file);
+
+        fetch("/speech-to-text", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            loader.style.display = "none"; // Hide loader after processing
+            if (data.text) {
+                resultElement.innerText = "Transcription: " + data.text;
+            } else {
+                resultElement.innerText = "Error: " + data.error;
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            resultElement.innerText = "An error occurred. Please try again.";
+            loader.style.display = "none"; // Hide loader on error
+        });
+    }
+</script>
 {% endblock %}
