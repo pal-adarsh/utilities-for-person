@@ -2,58 +2,157 @@
 
 {% block content %}
 <style>
+    /* Centering the webcam feed and buttons */
     #sign-language {
-    text-align: center;
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centers content vertically */
-    justify-content: center; /* Centers content horizontally */
-}
-
-video {
-    width: 100%;
-    max-width: 500px;
-    height: auto;
-    border: 2px solid #333;
-    border-radius: 10px;
-    margin-top: 10px;
-    display: block; /* Ensures no extra spacing */
-}
-
-button {
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    transition: 0.3s;
-}
-body{
-        background: url('/static/wallpaper3.jpeg');
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        height: auto;
+        background-color: #f5f5f5;
+        padding-top: 20px;
     }
 
-button:hover {
-    background-color: #0056b3;
-}
+    /* Styling the video element */
+    #webcam {
+        width: 640px;
+        height: 480px;
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
 
-#signResult {
-    font-weight: bold;
-    font-size: 18px;
-    margin-top: 20px;
-}
+    /* Styling the buttons */
+    #sign-language button {
+        padding: 12px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.3s ease-in-out;
+    }
 
+    /* Hover effect */
+    #sign-language button:hover {
+        background-color: #0056b3;
+    }
 
+    /* Styling the result text */
+    #signResult {
+        margin-top: 20px;
+        font-size: 1.2rem;
+        color: #333;
+        font-weight: bold;
+    }
 </style>
-<section id="sign-language">
-    <h2>Sign Language Interpreter</h2>
+
+<div id="sign-language">
+    <h1>Sign Language Interpreter</h1>
     <video id="webcam" autoplay></video>
-    <br>
     <button onclick="startSignLanguageInterpreter()">Start Interpreter</button>
     <button onclick="stopSignLanguageInterpreter()">Stop Interpreter</button>
     <p id="signResult">Sign language interpretation result will appear here.</p>
-</section>
+</div>
+
+<!-- Include MediaPipe Hands library -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<script>
+    let videoElement = document.getElementById("webcam");
+    let signResultElement = document.getElementById("signResult");
+    let currentStream = null;
+    let hands = null;
+
+    // Function to start the webcam and hand gesture recognition
+    function startSignLanguageInterpreter() {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    currentStream = stream;
+                    videoElement.srcObject = stream;
+                    videoElement.style.display = "block";
+                    initializeHandGestureRecognition();
+                })
+                .catch(function(err) {
+                    console.error("Error accessing webcam: ", err);
+                });
+        } else {
+            alert("Webcam not supported.");
+        }
+    }
+
+    // Function to stop the webcam and hand gesture recognition
+    function stopSignLanguageInterpreter() {
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+            videoElement.style.display = "none";
+            signResultElement.innerText = "Sign language interpreter stopped.";
+            if (hands) {
+                hands.close();
+            }
+        }
+    }
+
+    // Initialize MediaPipe Hands for gesture recognition
+    function initializeHandGestureRecognition() {
+        hands = new Hands({
+            locateFile: (file) => {
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+            }
+        });
+
+        hands.setOptions({
+            maxNumHands: 1,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+
+        hands.onResults(onHandResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => {
+                await hands.send({ image: videoElement });
+            },
+            width: 640,
+            height: 480
+        });
+
+        camera.start();
+    }
+
+    // Handle hand gesture recognition results
+    function onHandResults(results) {
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+            const hand = results.multiHandLandmarks[0]; // Assuming 1 hand for simplicity
+            const handText = `Hand detected at: (${hand[0].x.toFixed(2)}, ${hand[0].y.toFixed(2)})`;
+            signResultElement.innerText = handText;
+        } else {
+            signResultElement.innerText = "No hand detected.";
+        }
+    }
+
+    function onHandResults(results) {
+    if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        const hand = results.multiHandLandmarks[0];
+        const thumbTip = hand[4]; // Thumb tip landmark
+        const indexTip = hand[8]; // Index finger tip landmark
+
+        // Check for thumbs up gesture
+        if (thumbTip.y < indexTip.y) {
+            signResultElement.innerText = "Gesture: Thumbs Up";
+        } else {
+            signResultElement.innerText = "Hand detected.";
+        }
+    } else {
+        signResultElement.innerText = "No hand detected.";
+    }
+}
+</script>
 {% endblock %}
